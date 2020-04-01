@@ -25,9 +25,9 @@ for k=1:Nzz
     z0z((k-1)*Nzx*Nzy+1:k*Nzx*Nzy)=z0(k);
 end
 
-% Cinterval=1;             %%% ¼ÆËãÆ¯ÒÆÏµÊıµÄ»ı·ÖÇø¼ä
-xlim=100;                %%% ÌøÔ¾Õñ·ù½Ø¶Ï
-N=1;                   %%% Ò»¸ö³õÊ¼µã¸ø³öµÄÑù±¾Êı
+% Cinterval=1;             %%% è®¡ç®—æ¼‚ç§»ç³»æ•°çš„ç§¯åˆ†åŒºé—´
+xlim=100;                %%% è·³è·ƒæŒ¯å¹…æˆªæ–­
+N=1;                   %%% ä¸€ä¸ªåˆå§‹ç‚¹ç»™å‡ºçš„æ ·æœ¬æ•°
 h=0.001;
 alpha=0.5;
 sigma=0.5;
@@ -83,9 +83,9 @@ pdf2(I)=[];
 
 syms t
 % f=fittype('k1/(t+r1)^r2+k2','independent','t','coefficients',{'r1','r2','k1','k2'});
-% cfun=fit(x0,y0,f,'StartPoint',[3,4,-1e5,38]); %ÏÔÊ¾ÄâºÏº¯Êı£¬Êı¾İ±ØĞëÎªÁĞÏòÁ¿ĞÎÊ½
+% cfun=fit(x0,y0,f,'StartPoint',[3,4,-1e5,38]); %æ˜¾ç¤ºæ‹Ÿåˆå‡½æ•°ï¼Œæ•°æ®å¿…é¡»ä¸ºåˆ—å‘é‡å½¢å¼
 f=fittype('calpha/abs(t).^(1+alpha0)','independent','t','coefficients',{'calpha','alpha0'});
-cfun=fit(x2',pdf2',f,'StartPoint',[0.1,1]); %ÏÔÊ¾ÄâºÏº¯Êı£¬Êı¾İ±ØĞëÎªÁĞÏòÁ¿ĞÎÊ½
+cfun=fit(x2',pdf2',f,'StartPoint',[0.1,1]); %æ˜¾ç¤ºæ‹Ÿåˆå‡½æ•°ï¼Œæ•°æ®å¿…é¡»ä¸ºåˆ—å‘é‡å½¢å¼
 delta=0.05;
 % xi1=-xlim:0.01:-delta;
 xi2=delta:0.01:xlim;
