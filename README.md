@@ -1,6 +1,6 @@
 # Small-Time-Probability-Evolution-Method-of-Machine-Learning
 
-The file stblrad for alpha stable random variable
+The file stblrad for simulating alpha stable random variable
 
 The file Doublewell for one-dimensional example
 
