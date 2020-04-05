@@ -21,8 +21,8 @@ end
 xlim=100;                %%% 跳跃振幅截断
 N=1;                   %%% 一个初始点给出的样本数
 h=0.001;
-alpha=0.5;
-sigma=0.5;
+alpha=1;
+sigma=2;
 
 % zxf0=z0x;
 % zyf0=z0y;
@@ -32,11 +32,9 @@ zxf0=zeros(1,Nz*N);
 zyf0=zeros(1,Nz*N);
 position=(0:Nz-1)*N;
 
-gamma0=gamma((1+alpha)/2)*gamma(1)*h/(sqrt(pi)*gamma(1+alpha/2));
-M=stblrnd(alpha/2,1,2*(gamma0*cos(pi*alpha/4))^(2/alpha),0,1,Nz+1e4);
-I=abs(M)<xlim^2;
-M=M(I);
-M=M(1:Nz);
+% gamma0=gamma((1+alpha)/2)*gamma(1)*h/(sqrt(pi)*gamma(1+alpha/2));
+gamma0=h;
+M=stblrnd(alpha/2,1,2*(gamma0*cos(pi*alpha/4))^(2/alpha),0,1,Nz);
 Normal=randn(2,Nz);
 zxf(position+1)=(z0x-z0x.^3-5*z0x.*z0y.^2)*h+sigma*sqrt(M).*Normal(1,:);
 zxf0(position+1)=z0x;
@@ -45,52 +43,37 @@ zyf0(position+1)=z0y;
 
 % zxf0=zxf;
 % zyf0=zyf;
-znorm=sqrt(zxf.^2+zyf.^2);
-xf=znorm;
+xf=sqrt(zxf.^2+zyf.^2);
 
-% xpts=linspace(1e-1,1e1,1e3).^2;
-% xpts=linspace(-xlim,xlim,1e4);
-xpts=linspace(1e-2,xlim,1e3);
-[pdf,x00]=ksdensity(xf,xpts);
-% pdf1=2*pdf/(h*2*pi);
-pdf1=pdf/(h*2*pi);
-x2=x00;
-pdf2=pdf1;
-[~,I]=min(abs(x00));
-% I=1:2;
-x2(I)=[];
-pdf2(I)=[];
-% [~,I]=min(abs(x00));
-% x2(I)=[];
-% pdf2(I)=[];
+a=0.2;
+m=5;
+N=2;
+nk=zeros(1,N+1);
+for k=0:N
+    I=(abs(xf)>=m^k*a)&(abs(xf)<m^(k+1)*a);
+    nk(k+1)=length(xf(I));
+end
+nratio=nk(1)./nk(2:end);
+pos=1:N;
+alpha1=log(nratio)./(pos*log(m));
+alpha0=sum(alpha1)/N;
 
-
-syms t
-% f=fittype('k1/(t+r1)^r2+k2','independent','t','coefficients',{'r1','r2','k1','k2'});
-% cfun=fit(x0,y0,f,'StartPoint',[3,4,-1e5,38]); %显示拟合函数，数据必须为列向量形式
-f=fittype('calpha/abs(t).^(1+alpha0)','independent','t','coefficients',{'calpha','alpha0'});
-cfun=fit(x2',pdf2',f,'StartPoint',[0.15,1]); %显示拟合函数，数据必须为列向量形式
-delta=0.05;
-% xi1=-xlim:0.01:-delta;
-xi2=delta:0.01:xlim;
-% xi=[xi1 xi2];
-xi=xi2;
-% xi=-xlim:0.01:xlim+0.001;
-yi=cfun(xi);
-figure;
-plot(x00,pdf1,'r*',xi,yi,'b-');
+cnalpha=alpha0*gamma((2+alpha0)/2)/(2^(1-alpha0)*pi*gamma(1-alpha0/2));
+pos=0:N;
+sigmak=(a^alpha0*m.^(alpha0*pos).*nk*alpha0/(h*Nz*2*pi*cnalpha*(1-m^(-alpha0)))).^(1/alpha0);
+sigma0=sum(sigmak)/(N+1);
 
 % figure;
 % plot(zxf0(1:1e7),zyf0(1:1e7),'.');
 % axis([-xlim xlim -xlim xlim])
 % 
-xc=0.1:0.01:1.9;
-cnalpha=xc.*gamma((2+xc)/2)./(2.^(1-xc)*pi.*gamma(1-xc/2));
-figure;
-plot(xc,cnalpha);
+% xc=0.1:0.01:1.9;
+% cnalpha=xc.*gamma((2+xc)/2)./(2.^(1-xc)*pi.*gamma(1-xc/2));
+% figure;
+% plot(xc,cnalpha);
 
 Ncoef=3;
-I=(zxf0<zxmax)&(zxf0>zxmin)&(zyf0<zymax)&(zyf0>zymin);
+I=(xf<xlim);
 zxinitial=zxf0(I);
 zyinitial=zyf0(I);
 x=zxf(I);
