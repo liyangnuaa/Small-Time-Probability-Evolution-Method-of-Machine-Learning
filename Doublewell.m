@@ -8,7 +8,7 @@ z0=linspace(zmin,zmax,Nz);
 
 % N=1;                   %%% 一个初始点给出的样本数
 h=0.001;
-alpha=0.5;
+alpha=1;
 sigma=2;
 epsilong=1;
 
